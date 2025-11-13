@@ -5,7 +5,7 @@ import bcrypt from "bcryptjs"
 import { UserRole } from "@prisma/client"
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: process.env.NEXTAUTH_SECRET || "development-secret-key-change-in-production-abc123",
   providers: [
     Credentials({
       credentials: {
