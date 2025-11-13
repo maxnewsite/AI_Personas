@@ -102,8 +102,9 @@ VALUES (
 ) ON CONFLICT (id) DO NOTHING;
 
 -- 6. Persona Profiles
-INSERT INTO "PersonaProfile" ("personaType", name, description, "primaryBarriers", "coachingStrategies", "recommendedFrequency", "resourceAllocationWeight", "createdAt", "updatedAt") VALUES
+INSERT INTO "PersonaProfile" (id, "personaType", name, description, "primaryBarriers", "coachingStrategies", "recommendedFrequency", "resourceAllocationWeight", "createdAt", "updatedAt") VALUES
 (
+  'persona-trailblazer',
   'TRAILBLAZER',
   'Trailblazer',
   'Advanced users who actively experiment, share knowledge, and lead AI adoption initiatives.',
@@ -115,6 +116,7 @@ INSERT INTO "PersonaProfile" ("personaType", name, description, "primaryBarriers
   CURRENT_TIMESTAMP
 ),
 (
+  'persona-established',
   'ESTABLISHED',
   'Established',
   'Consistent users who have established reliable AI workflows for recurring tasks.',
@@ -126,6 +128,7 @@ INSERT INTO "PersonaProfile" ("personaType", name, description, "primaryBarriers
   CURRENT_TIMESTAMP
 ),
 (
+  'persona-emerging',
   'EMERGING',
   'Emerging',
   'Users with positive attitudes but inconsistent usage patterns and developing confidence.',
@@ -137,6 +140,7 @@ INSERT INTO "PersonaProfile" ("personaType", name, description, "primaryBarriers
   CURRENT_TIMESTAMP
 ),
 (
+  'persona-overwhelmed',
   'OVERWHELMED',
   'Overwhelmed',
   'Users who struggle with task decomposition, delegation, and managing AI integration.',
@@ -148,6 +152,7 @@ INSERT INTO "PersonaProfile" ("personaType", name, description, "primaryBarriers
   CURRENT_TIMESTAMP
 ),
 (
+  'persona-resistant',
   'RESISTANT',
   'Resistant',
   'Users with concerns about ethics, job security, or preference for traditional methods.',
