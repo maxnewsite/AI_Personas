@@ -1,4 +1,4 @@
-import { PrismaClient, UserRole, TechnicalBackground, PersonaType } from '@prisma/client'
+import { PrismaClient, UserRole, TechnicalBackground, PersonaType, CampaignStatus } from '@prisma/client'
 import bcrypt from 'bcryptjs'
 
 const prisma = new PrismaClient()
@@ -19,6 +19,28 @@ async function main() {
     }
   })
   console.log('Created admin user:', admin.email)
+
+  // Create Demo Campaign
+  const demoCampaign = await prisma.campaign.upsert({
+    where: { id: 'demo-campaign' },
+    update: {},
+    create: {
+      id: 'demo-campaign',
+      name: 'Q4 2024 AI Adoption Assessment',
+      startDate: new Date('2024-10-01'),
+      endDate: new Date('2024-12-31'),
+      status: CampaignStatus.ACTIVE,
+      createdById: admin.id,
+      targetAll: true,
+      targetDepartments: [],
+      targetEmployeeIds: [],
+      showResultsToParticipant: true,
+      allowRetakes: false,
+      sendReminders: true,
+      reminderDays: 3
+    }
+  })
+  console.log('Created demo campaign:', demoCampaign.name)
 
   // Create Coach User
   const coachPassword = await bcrypt.hash('coach123', 10)
