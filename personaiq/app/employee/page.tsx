@@ -6,6 +6,7 @@ import { Navigation } from "@/components/ui/Navigation"
 import { Card } from "@/components/ui/Card"
 import { PersonaBadge, PersonaDescription } from "@/components/ui/PersonaBadge"
 import { Button } from "@/components/ui/Button"
+import { Chatbot } from "@/components/ai/Chatbot"
 import Link from "next/link"
 import { ClipboardList, TrendingUp, BookOpen } from "lucide-react"
 
@@ -223,6 +224,9 @@ export default async function EmployeeDashboardPage() {
           </div>
         </div>
       </main>
+
+      {/* AI Chatbot Assistant */}
+      <Chatbot />
     </div>
   )
 }

@@ -6,6 +6,7 @@ import { assessmentQuestions, getSectionQuestions, getTotalSections } from '@/li
 import { classifyPersona } from '@/lib/algorithms/persona-classification'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
+import { Chatbot } from '@/components/ai/Chatbot'
 import { Brain, ChevronLeft, ChevronRight, Save, Clock, CheckCircle, AlertCircle } from 'lucide-react'
 import Link from 'next/link'
 
@@ -510,6 +511,9 @@ export default function AssessmentPage() {
           </div>
         </Card>
       </main>
+
+      {/* AI Chatbot Assistant */}
+      <Chatbot />
     </div>
   )
 }

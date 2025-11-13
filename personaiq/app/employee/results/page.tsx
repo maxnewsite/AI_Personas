@@ -5,6 +5,7 @@ import { prisma } from "@/lib/db"
 import { PersonaBadge, PersonaDescription } from "@/components/ui/PersonaBadge"
 import { Card } from "@/components/ui/Card"
 import { Button } from "@/components/ui/Button"
+import { Chatbot } from "@/components/ai/Chatbot"
 import Link from "next/link"
 import { CheckCircle, TrendingUp, Target } from "lucide-react"
 
@@ -176,6 +177,9 @@ export default async function ResultsPage() {
           </Link>
         </div>
       </main>
+
+      {/* AI Chatbot Assistant */}
+      <Chatbot />
     </div>
   )
 }
