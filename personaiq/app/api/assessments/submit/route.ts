@@ -50,8 +50,8 @@ export async function POST(req: NextRequest) {
         campaignId: 'demo-campaign', // For demo purposes
         completionDate: new Date(),
         timeTaken: 15, // Approximate
-        responses: responses,
-        dimensionScores: classificationResult.dimensionScores,
+        responses: responses as any,
+        dimensionScores: classificationResult.dimensionScores as any,
         personaClassification: classificationResult.persona,
         confidenceScore: classificationResult.confidence
       }
