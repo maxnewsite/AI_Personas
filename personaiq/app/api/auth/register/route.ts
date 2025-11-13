@@ -23,27 +23,29 @@ export async function POST(req: NextRequest) {
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10)
 
-    // Create user and employee profile
+    // Create user first
     const user = await prisma.user.create({
       data: {
         email,
         password: hashedPassword,
         name,
         role: role || UserRole.EMPLOYEE,
-        employee: role === UserRole.EMPLOYEE || !role ? {
-          create: {
-            employeeId: `EMP${Date.now()}`,
-            department: department || 'General',
-            jobRole: jobRole || 'Employee',
-            hireDate: new Date(),
-            technicalBackground: TechnicalBackground.NONE
-          }
-        } : undefined
-      },
-      include: {
-        employee: true
       }
     })
+
+    // Create employee profile if role is EMPLOYEE
+    if (user.role === UserRole.EMPLOYEE) {
+      await prisma.employee.create({
+        data: {
+          userId: user.id,
+          employeeId: `EMP${Date.now()}`,
+          department: department || 'General',
+          jobRole: jobRole || 'Employee',
+          hireDate: new Date(),
+          technicalBackground: TechnicalBackground.NONE
+        }
+      })
+    }
 
     // Don't send password back
     const { password: _, ...userWithoutPassword } = user
