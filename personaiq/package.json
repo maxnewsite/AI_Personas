@@ -13,7 +13,12 @@
     "prisma:studio": "prisma studio",
     "db:seed": "ts-node prisma/seed.ts"
   },
-  "keywords": ["ai", "adoption", "persona", "assessment"],
+  "keywords": [
+    "ai",
+    "adoption",
+    "persona",
+    "assessment"
+  ],
   "author": "PersonaIQ",
   "license": "MIT",
   "dependencies": {
@@ -34,7 +39,7 @@
     "react-dom": "^19.2.0",
     "react-hook-form": "^7.66.0",
     "recharts": "^3.4.1",
-    "tailwindcss": "^4.1.17",
+    "tailwindcss": "^3.4.18",
     "typescript": "^5.9.3",
     "zod": "^4.1.12"
   },
