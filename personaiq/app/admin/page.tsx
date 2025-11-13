@@ -5,6 +5,8 @@ import { prisma } from "@/lib/db"
 import { Navigation } from "@/components/ui/Navigation"
 import { Card, DashboardStat } from "@/components/ui/Card"
 import { PersonaBadge } from "@/components/ui/PersonaBadge"
+import { RiskAnalysisButton } from "@/components/ai/RiskAnalysisButton"
+import { TrendAnalysisButton } from "@/components/ai/TrendAnalysisButton"
 import { signOut } from "@/lib/auth"
 
 export default async function AdminDashboardPage() {
@@ -113,6 +115,17 @@ export default async function AdminDashboardPage() {
 
           <Card title="Quick Actions" description="Common administrative tasks">
             <div className="space-y-3">
+              {/* AI-Powered Actions */}
+              {employeesWithPersona > 0 && (
+                <>
+                  <div className="flex gap-2">
+                    <RiskAnalysisButton className="flex-1" />
+                    <TrendAnalysisButton className="flex-1" />
+                  </div>
+                  <div className="border-t border-gray-200 pt-3"></div>
+                </>
+              )}
+
               <a
                 href="/admin/campaigns"
                 className="block p-4 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"

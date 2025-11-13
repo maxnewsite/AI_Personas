@@ -6,6 +6,7 @@ import { Navigation } from "@/components/ui/Navigation"
 import { Card } from "@/components/ui/Card"
 import { PersonaBadge, PersonaDescription } from "@/components/ui/PersonaBadge"
 import { Button } from "@/components/ui/Button"
+import { AICoachingButton } from "@/components/ai/AICoachingButton"
 import Link from "next/link"
 import { ArrowLeft, TrendingUp, AlertCircle, Target, BookOpen, CheckSquare, Flag } from "lucide-react"
 import { generateCoachingRecommendations } from "@/lib/algorithms/coaching-recommendations"
@@ -314,6 +315,13 @@ export default async function CoachEmployeeDetailPage({
             {/* Quick Actions */}
             <Card title="Quick Actions">
               <div className="space-y-2">
+                {hasPersona && (
+                  <AICoachingButton
+                    employeeId={employee.id}
+                    employeeName={employee.user.name || 'Employee'}
+                    assessmentResponseId={latestAssessment?.id}
+                  />
+                )}
                 <Link href={`/coach/employees/${employee.id}/notes`} className="block">
                   <Button variant="primary" size="sm" className="w-full">
                     Add Coaching Note

@@ -6,6 +6,7 @@ import { Navigation } from "@/components/ui/Navigation"
 import { Card, DashboardStat } from "@/components/ui/Card"
 import { PersonaBadge } from "@/components/ui/PersonaBadge"
 import { Button } from "@/components/ui/Button"
+import { AICampaignAnalysisButton } from "@/components/ai/AICampaignAnalysisButton"
 import Link from "next/link"
 import { ArrowLeft, Users, CheckCircle, TrendingUp, Calendar } from "lucide-react"
 
@@ -294,6 +295,12 @@ export default async function CampaignDetailPage({
             {/* Actions */}
             <Card title="Actions">
               <div className="space-y-2">
+                {completedResponses > 0 && (
+                  <AICampaignAnalysisButton
+                    campaignId={campaign.id}
+                    campaignName={campaign.name}
+                  />
+                )}
                 <Button variant="secondary" size="sm" className="w-full">
                   Export Results
                 </Button>
