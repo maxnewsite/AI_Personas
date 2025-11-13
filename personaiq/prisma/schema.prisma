@@ -5,7 +5,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
@@ -116,8 +116,8 @@ model Campaign {
   status            CampaignStatus  @default(DRAFT)
   createdById       String
   targetAll         Boolean         @default(false)
-  targetDepartments String[]
-  targetEmployeeIds String[]
+  targetDepartments Json            // Array of department names
+  targetEmployeeIds Json            // Array of employee IDs
   showResultsToParticipant Boolean @default(false)
   allowRetakes      Boolean         @default(false)
   sendReminders     Boolean         @default(true)
@@ -179,8 +179,8 @@ model PersonaProfile {
   personaType             PersonaType @unique
   name                    String
   description             String
-  primaryBarriers         String[]
-  coachingStrategies      String[]
+  primaryBarriers         Json  // Array of barriers
+  coachingStrategies      Json  // Array of strategies
   recommendedFrequency    String
   resourceAllocationWeight Float
 
@@ -206,7 +206,7 @@ model Resource {
   type            String   // Article, Video, Template, Tool
   url             String
   description     String
-  relevantFor     String[] // Tags: persona names, barrier types, skill areas
+  relevantFor     Json  // Array of tags: persona names, barrier types, skill areas
   estimatedTime   String?
   priority        String   @default("MEDIUM")
 

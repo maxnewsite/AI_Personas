@@ -24,7 +24,6 @@
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
     "@prisma/client": "^6.19.0",
-    "@types/node": "^24.10.1",
     "@types/react": "^19.2.4",
     "@types/react-dom": "^19.2.3",
     "autoprefixer": "^10.4.22",
@@ -44,6 +43,8 @@
     "zod": "^4.1.12"
   },
   "devDependencies": {
-    "@types/bcryptjs": "^2.4.6"
+    "@types/bcryptjs": "^2.4.6",
+    "@types/node": "^24.10.1",
+    "ts-node": "^10.9.2"
   }
 }
