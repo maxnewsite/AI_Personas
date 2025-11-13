@@ -137,9 +137,11 @@ model AssessmentResponse {
   id                String      @id @default(cuid())
   employeeId        String
   campaignId        String
+  assessmentToken   String?     @unique  // Unique token for assessment link
   completionDate    DateTime?
   timeTaken         Int?        // minutes
   responses         Json        // {question_id: answer}
+  sectionScores     Json        // {section_id: score}
   dimensionScores   Json        // {dimension_name: score}
   personaClassification PersonaType?
   confidenceScore   Float?
@@ -154,6 +156,7 @@ model AssessmentResponse {
   @@index([employeeId])
   @@index([campaignId])
   @@index([completionDate])
+  @@index([assessmentToken])
 }
 
 model PersonaHistory {
