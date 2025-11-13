@@ -5,8 +5,8 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 enum UserRole {
@@ -55,7 +55,6 @@ model User {
   // Relations
   employee      Employee?
   createdCampaigns Campaign[]
-  coachingSessions CoachingNote[]
   auditLogs     AuditLog[]
 
   @@index([email])
@@ -220,8 +219,10 @@ model CoachingNote {
   id          String   @id @default(cuid())
   employeeId  String
   coachId     String
-  note        String
   sessionDate DateTime
+  sessionType String?
+  notes       String
+  actionItems String?
   nextSteps   String?
 
   createdAt   DateTime @default(now())
@@ -230,8 +231,6 @@ model CoachingNote {
   // Relations
   employee    Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
   coach       Coach    @relation(fields: [coachId], references: [id])
-  createdBy   User     @relation(fields: [createdById], references: [id])
-  createdById String
 
   @@index([employeeId])
   @@index([coachId])
