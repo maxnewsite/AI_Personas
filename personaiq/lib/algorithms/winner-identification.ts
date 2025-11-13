@@ -218,10 +218,6 @@ export function calculateWinnerScore(
     isWinner = true;
     priority = WinnerPriority.MEDIUM;
     reasoning = 'Strong Trailblazer with solid impact metrics';
-  } else if (winnerScore >= 85 && persona === PersonaType.ESTABLISHED) {
-    isWinner = false; // Flagged as POTENTIAL
-    priority = WinnerPriority.MEDIUM;
-    reasoning = 'Potential winner - Established persona with very high scores (monitor for elevation)';
   } else {
     reasoning = 'Does not meet winner threshold criteria';
   }
