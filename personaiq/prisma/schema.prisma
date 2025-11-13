@@ -1,0 +1,273 @@
+// This is your Prisma schema file
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  ADMIN
+  COACH
+  EMPLOYEE
+  MANAGER
+}
+
+enum PersonaType {
+  TRAILBLAZER
+  ESTABLISHED
+  EMERGING
+  OVERWHELMED
+  RESISTANT
+}
+
+enum CampaignStatus {
+  DRAFT
+  ACTIVE
+  CLOSED
+}
+
+enum TechnicalBackground {
+  NONE
+  BASIC
+  INTERMEDIATE
+  ADVANCED
+}
+
+enum WinnerPriority {
+  HIGH
+  MEDIUM
+  LOW
+}
+
+model User {
+  id            String   @id @default(cuid())
+  email         String   @unique
+  password      String
+  name          String
+  role          UserRole @default(EMPLOYEE)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relations
+  employee      Employee?
+  createdCampaigns Campaign[]
+  coachingSessions CoachingNote[]
+  auditLogs     AuditLog[]
+
+  @@index([email])
+}
+
+model Employee {
+  id                String              @id @default(cuid())
+  userId            String              @unique
+  employeeId        String              @unique
+  department        String
+  jobRole           String
+  managerId         String?
+  hireDate          DateTime
+  technicalBackground TechnicalBackground @default(NONE)
+  currentPersona    PersonaType?
+  winnerStatus      Boolean             @default(false)
+  winnerScore       Float               @default(0)
+  winnerPriority    WinnerPriority?
+
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+
+  // Relations
+  user              User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  manager           Employee?           @relation("ManagerToEmployee", fields: [managerId], references: [id])
+  directReports     Employee[]          @relation("ManagerToEmployee")
+
+  responses         AssessmentResponse[]
+  personaHistory    PersonaHistory[]
+  coachingNotes     CoachingNote[]
+  assignedCoach     Coach?              @relation("CoachToEmployee", fields: [assignedCoachId], references: [id])
+  assignedCoachId   String?
+
+  @@index([employeeId])
+  @@index([department])
+  @@index([managerId])
+  @@index([currentPersona])
+}
+
+model Coach {
+  id            String   @id @default(cuid())
+  userId        String   @unique
+  specialization String?
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relations
+  employees     Employee[] @relation("CoachToEmployee")
+  coachingNotes CoachingNote[]
+}
+
+model Campaign {
+  id                String          @id @default(cuid())
+  name              String
+  startDate         DateTime
+  endDate           DateTime
+  status            CampaignStatus  @default(DRAFT)
+  createdById       String
+  targetAll         Boolean         @default(false)
+  targetDepartments String[]
+  targetEmployeeIds String[]
+  showResultsToParticipant Boolean @default(false)
+  allowRetakes      Boolean         @default(false)
+  sendReminders     Boolean         @default(true)
+  reminderDays      Int             @default(3)
+
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  // Relations
+  createdBy         User            @relation(fields: [createdById], references: [id])
+  responses         AssessmentResponse[]
+
+  @@index([status])
+  @@index([createdById])
+}
+
+model AssessmentResponse {
+  id                String      @id @default(cuid())
+  employeeId        String
+  campaignId        String
+  completionDate    DateTime?
+  timeTaken         Int?        // minutes
+  responses         Json        // {question_id: answer}
+  dimensionScores   Json        // {dimension_name: score}
+  personaClassification PersonaType?
+  confidenceScore   Float?
+
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+
+  // Relations
+  employee          Employee    @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  campaign          Campaign    @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+
+  @@index([employeeId])
+  @@index([campaignId])
+  @@index([completionDate])
+}
+
+model PersonaHistory {
+  id          String      @id @default(cuid())
+  employeeId  String
+  persona     PersonaType
+  date        DateTime    @default(now())
+  confidence  Float
+  source      String      // e.g., "Assessment", "Manual Override"
+
+  createdAt   DateTime    @default(now())
+
+  // Relations
+  employee    Employee    @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  @@index([employeeId])
+  @@index([date])
+}
+
+model PersonaProfile {
+  id                      String      @id @default(cuid())
+  personaType             PersonaType @unique
+  name                    String
+  description             String
+  primaryBarriers         String[]
+  coachingStrategies      String[]
+  recommendedFrequency    String
+  resourceAllocationWeight Float
+
+  createdAt               DateTime    @default(now())
+  updatedAt               DateTime    @updatedAt
+}
+
+model WinnerCriteria {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  weight      Float
+  dataSource  String
+  threshold   Float
+  description String
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Resource {
+  id              String   @id @default(cuid())
+  title           String
+  type            String   // Article, Video, Template, Tool
+  url             String
+  description     String
+  relevantFor     String[] // Tags: persona names, barrier types, skill areas
+  estimatedTime   String?
+  priority        String   @default("MEDIUM")
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([type])
+}
+
+model CoachingNote {
+  id          String   @id @default(cuid())
+  employeeId  String
+  coachId     String
+  note        String
+  sessionDate DateTime
+  nextSteps   String?
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  employee    Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  coach       Coach    @relation(fields: [coachId], references: [id])
+  createdBy   User     @relation(fields: [createdById], references: [id])
+  createdById String
+
+  @@index([employeeId])
+  @@index([coachId])
+  @@index([sessionDate])
+}
+
+model AuditLog {
+  id          String   @id @default(cuid())
+  userId      String
+  action      String
+  resource    String
+  resourceId  String?
+  details     Json?
+  ipAddress   String?
+
+  createdAt   DateTime @default(now())
+
+  // Relations
+  user        User     @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([action])
+  @@index([createdAt])
+}
+
+model Notification {
+  id          String   @id @default(cuid())
+  userId      String
+  type        String
+  title       String
+  message     String
+  read        Boolean  @default(false)
+  metadata    Json?
+
+  createdAt   DateTime @default(now())
+
+  @@index([userId])
+  @@index([read])
+}
