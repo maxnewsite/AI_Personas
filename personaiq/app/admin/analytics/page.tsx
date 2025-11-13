@@ -5,6 +5,8 @@ import { prisma } from "@/lib/db"
 import { Navigation } from "@/components/ui/Navigation"
 import { Card, DashboardStat } from "@/components/ui/Card"
 import { PersonaBadge } from "@/components/ui/PersonaBadge"
+import { RiskAnalysisButton } from "@/components/ai/RiskAnalysisButton"
+import { TrendAnalysisButton } from "@/components/ai/TrendAnalysisButton"
 import { TrendingUp, Users, Award, Target } from "lucide-react"
 
 export default async function AdminAnalyticsPage() {
@@ -150,6 +152,19 @@ export default async function AdminAnalyticsPage() {
             icon={<Target className="h-6 w-6" />}
           />
         </div>
+
+        {/* AI-Powered Analytics */}
+        {assessedEmployees > 0 && (
+          <Card title="AI-Powered Analytics" description="Advanced insights and predictions" className="mb-8">
+            <div className="flex flex-wrap gap-3">
+              <RiskAnalysisButton />
+              <TrendAnalysisButton />
+            </div>
+            <p className="mt-4 text-sm text-gray-600">
+              Use AI-powered analysis to identify at-risk employees and understand persona evolution trends across your organization.
+            </p>
+          </Card>
+        )}
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
           {/* Persona Distribution */}
