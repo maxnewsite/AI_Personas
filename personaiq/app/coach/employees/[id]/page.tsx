@@ -10,7 +10,7 @@ import { AICoachingButton } from "@/components/ai/AICoachingButton"
 import Link from "next/link"
 import { ArrowLeft, TrendingUp, AlertCircle, Target, BookOpen, CheckSquare, Flag } from "lucide-react"
 import { generateCoachingRecommendations } from "@/lib/algorithms/coaching-recommendations"
-import { identifyWinner } from "@/lib/algorithms/winner-identification"
+import { calculateWinnerScore } from "@/lib/algorithms/winner-identification"
 
 export default async function CoachEmployeeDetailPage({
   params
@@ -62,10 +62,10 @@ export default async function CoachEmployeeDetailPage({
   // Generate fresh coaching recommendations if we have assessment data
   let coachingRecs = null
   if (latestAssessment && latestAssessment.personaClassification && latestAssessment.dimensionScores) {
-    const winnerResult = identifyWinner(
-      latestAssessment.personaClassification,
+    const winnerResult = calculateWinnerScore(
+      latestAssessment.responses as any,
       latestAssessment.dimensionScores as any,
-      latestAssessment.responses as any
+      latestAssessment.personaClassification
     )
 
     coachingRecs = generateCoachingRecommendations(
