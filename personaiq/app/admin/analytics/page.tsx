@@ -78,7 +78,7 @@ export default async function AdminAnalyticsPage() {
   const topWinners = await prisma.employee.findMany({
     where: {
       winnerStatus: true,
-      winnerScore: { not: null }
+      winnerScore: { gt: 0 }
     },
     include: {
       user: { select: { name: true } }
@@ -91,7 +91,7 @@ export default async function AdminAnalyticsPage() {
   const technicalDistribution = await prisma.employee.groupBy({
     by: ['technicalBackground'],
     _count: true,
-    where: { currentPersona: { not: null } }
+    where: { currentPersona: { isNot: null } }
   })
 
   // Recent assessments

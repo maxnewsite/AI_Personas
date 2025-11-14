@@ -25,9 +25,7 @@ export async function GET(
           }
         },
         assignedCoach: {
-          include: {
-            user: { select: { name: true } }
-          }
+          select: { id: true, specialization: true, userId: true }
         },
         responses: {
           orderBy: { completionDate: 'desc' },
@@ -51,6 +49,15 @@ export async function GET(
       session.user.id !== employee.userId
     ) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
+    }
+
+    // Fetch coach user name if coach is assigned
+    if (employee.assignedCoach) {
+      const coachUser = await prisma.user.findUnique({
+        where: { id: employee.assignedCoach.userId },
+        select: { name: true }
+      })
+      employee.assignedCoach.user = coachUser
     }
 
     return NextResponse.json({ employee })
@@ -138,12 +145,19 @@ export async function PUT(
           }
         },
         assignedCoach: {
-          include: {
-            user: { select: { name: true } }
-          }
+          select: { id: true, specialization: true, userId: true }
         }
       }
     })
+
+    // Fetch coach user name if coach is assigned
+    if (employee.assignedCoach) {
+      const coachUser = await prisma.user.findUnique({
+        where: { id: employee.assignedCoach.userId },
+        select: { name: true }
+      })
+      employee.assignedCoach.user = coachUser
+    }
 
     return NextResponse.json({ employee })
   } catch (error) {

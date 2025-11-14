@@ -28,13 +28,10 @@ export function Navigation({ role, userName, onSignOut }: NavigationProps) {
       { href: '/admin/analytics', label: 'Analytics', icon: BarChart3 }
     ],
     COACH: [
-      { href: '/coach', label: 'Dashboard', icon: LayoutDashboard },
-      { href: '/coach/employees', label: 'My Employees', icon: Users },
-      { href: '/coach/sessions', label: 'Sessions', icon: ClipboardList }
+      { href: '/coach', label: 'Dashboard', icon: LayoutDashboard }
     ],
     MANAGER: [
-      { href: '/manager', label: 'Dashboard', icon: LayoutDashboard },
-      { href: '/manager/team', label: 'My Team', icon: Users }
+      { href: '/manager', label: 'Dashboard', icon: LayoutDashboard }
     ],
     EMPLOYEE: [
       { href: '/employee', label: 'Dashboard', icon: LayoutDashboard },

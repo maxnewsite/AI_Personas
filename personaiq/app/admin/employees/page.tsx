@@ -26,9 +26,7 @@ export default async function AdminEmployeesPage() {
         }
       },
       assignedCoach: {
-        include: {
-          user: { select: { name: true } }
-        }
+        select: { id: true, specialization: true, userId: true }
       },
       responses: {
         orderBy: { completionDate: 'desc' },
@@ -37,6 +35,18 @@ export default async function AdminEmployeesPage() {
     },
     orderBy: { user: { name: 'asc' } }
   })
+
+  // Fetch coach user names separately
+  const coachUserIds = employees
+    .map(e => e.assignedCoach?.userId)
+    .filter((id): id is string => id !== null && id !== undefined)
+  const coachUsers = coachUserIds.length > 0
+    ? await prisma.user.findMany({
+        where: { id: { in: coachUserIds } },
+        select: { id: true, name: true }
+      })
+    : []
+  const coachUserMap = new Map(coachUsers.map(u => [u.id, u.name]))
 
   async function handleSignOut() {
     'use server'
@@ -223,7 +233,9 @@ export default async function AdminEmployeesPage() {
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           {employee.assignedCoach ? (
-                            <div className="text-sm text-gray-900">{employee.assignedCoach.user.name}</div>
+                            <div className="text-sm text-gray-900">
+                              {coachUserMap.get(employee.assignedCoach.userId) || 'Unknown Coach'}
+                            </div>
                           ) : (
                             <span className="text-sm text-orange-600">Unassigned</span>
                           )}
