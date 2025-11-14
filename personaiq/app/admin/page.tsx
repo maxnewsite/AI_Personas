@@ -8,6 +8,7 @@ import { PersonaBadge } from "@/components/ui/PersonaBadge"
 import { RiskAnalysisButton } from "@/components/ai/RiskAnalysisButton"
 import { TrendAnalysisButton } from "@/components/ai/TrendAnalysisButton"
 import { signOut } from "@/lib/auth"
+import Link from "next/link"
 
 export default async function AdminDashboardPage() {
   const session = await auth()
@@ -126,27 +127,27 @@ export default async function AdminDashboardPage() {
                 </>
               )}
 
-              <a
+              <Link
                 href="/admin/campaigns"
                 className="block p-4 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"
               >
                 <div className="font-medium text-blue-900">Create New Campaign</div>
                 <div className="text-sm text-blue-700">Launch a new assessment campaign</div>
-              </a>
-              <a
+              </Link>
+              <Link
                 href="/admin/employees"
                 className="block p-4 bg-green-50 hover:bg-green-100 rounded-lg transition-colors"
               >
                 <div className="font-medium text-green-900">View All Employees</div>
                 <div className="text-sm text-green-700">Manage employee profiles and personas</div>
-              </a>
-              <a
+              </Link>
+              <Link
                 href="/admin/analytics"
                 className="block p-4 bg-purple-50 hover:bg-purple-100 rounded-lg transition-colors"
               >
                 <div className="font-medium text-purple-900">Analytics & Reports</div>
                 <div className="text-sm text-purple-700">Deep dive into organization metrics</div>
-              </a>
+              </Link>
             </div>
           </Card>
         </div>

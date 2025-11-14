@@ -34,7 +34,7 @@ export function TrendAnalysisButton({ className }: TrendAnalysisButtonProps) {
     setError(null)
 
     try {
-      const response = await fetch('/api/ai/predict/trends', {
+      const response = await fetch('/api/ai/predict', {
         method: 'GET'
       })
 
