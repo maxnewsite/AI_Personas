@@ -6,7 +6,7 @@ import { UserRole } from '@prisma/client'
 // PUT /api/coaching-notes/[id] - Update a coaching note
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await auth()
@@ -14,6 +14,8 @@ export async function PUT(
     if (!session?.user || session.user.role !== UserRole.COACH) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
+
+    const { id } = await params
 
     const coach = await prisma.coach.findUnique({
       where: { userId: session.user.id }
@@ -34,7 +36,7 @@ export async function PUT(
 
     // Check if note exists and belongs to this coach
     const existingNote = await prisma.coachingNote.findUnique({
-      where: { id: params.id }
+      where: { id }
     })
 
     if (!existingNote) {
@@ -46,7 +48,7 @@ export async function PUT(
     }
 
     const coachingNote = await prisma.coachingNote.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         ...(sessionDate && { sessionDate: new Date(sessionDate) }),
         ...(sessionType !== undefined && { sessionType }),
@@ -76,7 +78,7 @@ export async function PUT(
 // DELETE /api/coaching-notes/[id] - Delete a coaching note
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await auth()
@@ -84,6 +86,8 @@ export async function DELETE(
     if (!session?.user || session.user.role !== UserRole.COACH) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
+
+    const { id } = await params
 
     const coach = await prisma.coach.findUnique({
       where: { userId: session.user.id }
@@ -95,7 +99,7 @@ export async function DELETE(
 
     // Check if note exists and belongs to this coach
     const existingNote = await prisma.coachingNote.findUnique({
-      where: { id: params.id }
+      where: { id }
     })
 
     if (!existingNote) {
@@ -107,7 +111,7 @@ export async function DELETE(
     }
 
     await prisma.coachingNote.delete({
-      where: { id: params.id }
+      where: { id }
     })
 
     return NextResponse.json({ message: 'Coaching note deleted successfully' })

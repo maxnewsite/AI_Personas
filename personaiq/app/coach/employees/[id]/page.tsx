@@ -15,13 +15,16 @@ import { calculateWinnerScore } from "@/lib/algorithms/winner-identification"
 export default async function CoachEmployeeDetailPage({
   params
 }: {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }) {
   const session = await auth()
 
   if (!session?.user || session.user.role !== UserRole.COACH) {
     redirect('/auth/login')
   }
+
+  // Await params in Next.js 15+
+  const { id } = await params
 
   // Find coach profile
   const coach = await prisma.coach.findUnique({
@@ -34,7 +37,7 @@ export default async function CoachEmployeeDetailPage({
 
   // Fetch employee data
   const employee = await prisma.employee.findUnique({
-    where: { id: params.id },
+    where: { id },
     include: {
       user: { select: { name: true, email: true } },
       personaHistory: {

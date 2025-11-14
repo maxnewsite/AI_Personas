@@ -6,7 +6,7 @@ import { UserRole } from '@prisma/client'
 // GET /api/employees/[id] - Get employee details
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await auth()
@@ -15,8 +15,10 @@ export async function GET(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
+    const { id } = await params
+
     const employee = await prisma.employee.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         user: { select: { name: true, email: true } },
         manager: {
@@ -73,7 +75,7 @@ export async function GET(
 // PUT /api/employees/[id] - Update employee
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await auth()
@@ -81,6 +83,8 @@ export async function PUT(
     if (!session?.user || session.user.role !== UserRole.ADMIN) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
+
+    const { id } = await params
 
     const body = await request.json()
     const {
@@ -97,7 +101,7 @@ export async function PUT(
 
     // Check if employee exists
     const existingEmployee = await prisma.employee.findUnique({
-      where: { id: params.id }
+      where: { id }
     })
 
     if (!existingEmployee) {
@@ -125,7 +129,7 @@ export async function PUT(
     }
 
     const employee = await prisma.employee.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         ...(department && { department }),
         ...(jobRole && { jobRole }),

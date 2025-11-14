@@ -6,7 +6,7 @@ import { UserRole, CampaignStatus } from '@prisma/client'
 // GET /api/campaigns/[id] - Get a single campaign
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await auth()
@@ -15,8 +15,10 @@ export async function GET(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
+    const { id } = await params
+
     const campaign = await prisma.campaign.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         createdBy: { select: { name: true, email: true } },
         responses: {
@@ -48,7 +50,7 @@ export async function GET(
 // PUT /api/campaigns/[id] - Update a campaign
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await auth()
@@ -56,6 +58,8 @@ export async function PUT(
     if (!session?.user || session.user.role !== UserRole.ADMIN) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
+
+    const { id } = await params
 
     const body = await request.json()
     const {
@@ -74,7 +78,7 @@ export async function PUT(
 
     // Check if campaign exists
     const existingCampaign = await prisma.campaign.findUnique({
-      where: { id: params.id }
+      where: { id }
     })
 
     if (!existingCampaign) {
@@ -90,7 +94,7 @@ export async function PUT(
     }
 
     const campaign = await prisma.campaign.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         ...(name && { name }),
         ...(startDate && { startDate: new Date(startDate) }),
@@ -119,7 +123,7 @@ export async function PUT(
 // DELETE /api/campaigns/[id] - Delete a campaign
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await auth()
@@ -128,9 +132,11 @@ export async function DELETE(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
+    const { id } = await params
+
     // Check if campaign exists
     const existingCampaign = await prisma.campaign.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         responses: { select: { id: true } }
       }
@@ -149,7 +155,7 @@ export async function DELETE(
     }
 
     await prisma.campaign.delete({
-      where: { id: params.id }
+      where: { id }
     })
 
     return NextResponse.json({ message: 'Campaign deleted successfully' })

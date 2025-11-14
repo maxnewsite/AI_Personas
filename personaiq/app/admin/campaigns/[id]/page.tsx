@@ -14,7 +14,7 @@ import { ArrowLeft, Users, CheckCircle, TrendingUp, Calendar } from "lucide-reac
 export default async function CampaignDetailPage({
   params
 }: {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }) {
   const session = await auth()
 
@@ -22,9 +22,12 @@ export default async function CampaignDetailPage({
     redirect('/auth/login')
   }
 
+  // Await params in Next.js 15+
+  const { id } = await params
+
   // Fetch campaign with all responses
   const campaign = await prisma.campaign.findUnique({
-    where: { id: params.id },
+    where: { id },
     include: {
       createdBy: { select: { name: true, email: true } },
       responses: {
